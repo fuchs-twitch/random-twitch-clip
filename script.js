@@ -6,6 +6,8 @@ const video = document.querySelector("#clip");
 const container = document.querySelector('.video-container')
 const channel = document.querySelector('.channel')
 
+let test
+
 window.addEventListener('onWidgetLoad', (obj) => {
     console.log(`Debug: widget loaded`)
     const fieldData = obj.detail.fieldData
