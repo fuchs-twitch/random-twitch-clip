@@ -1,0 +1,96 @@
+{
+    "generalCommand": {
+      "type": "text",
+      "label": "Command",
+      "value": "!so",
+      "group": "General"
+    },
+    "generalMinViews": {
+      "type": "number",
+      "label": "Min required views",
+      "value": 10,
+      "steps": 1,
+      "min": 1,
+      "group":"General"
+    },
+    "permissionsMods": {
+      "type": "checkbox",
+      "label": "Mods",
+      "value": false,
+      "group": "Permissions"
+    },
+    "permissionsVIPs": {
+      "type": "checkbox",
+      "label": "VIPs",
+      "value": false,
+      "group": "Permissions"
+    },
+    "generalFontSize": {
+      "type": "slider",
+      "label": "Font size",
+      "value": 32,
+      "min": 16,
+      "max": 72,
+      "step": 1,
+      "group": "Top Text"
+    },
+    "topTextFontName": {
+      "type": "googleFont",    
+      "label": "Font name",
+      "value": "Oswald",
+      "group": "Top Text"
+    },
+    "topTextColor": {
+      "type": "colorpicker",
+      "label": "Text Color",
+      "value": "#FFFFFF",
+      "group": "Top Text"
+    },
+    "topTextShadow": {
+      "type": "colorpicker",
+      "label": "Text Shadow",
+      "value": "rgb(221, 22, 130)",
+      "group": "Top Text"
+    },
+    "topTextTemplate": {
+      "type": "text",
+      "label": "Custom Shoutout Text",
+      "value": "Check out",
+      "group": "Top Text"
+    },
+    "topTextAlign": {
+      "label": "Text Align",
+      "type": "dropdown",
+      "value": "center",
+      "options": {
+        "left": "Left",
+        "center": "Center",
+        "right": "Right"
+      },
+      "group":"Top Text"
+    },
+    "effectsOpacityTransition": {
+      "type": "number",
+      "label": "Opacity Fade Transition (sec)",
+      "steps": 0.1,
+      "value": 0.5,
+      "min": 0,
+      "group": "Effects"
+    },
+    "effectsScaleTransition": {
+      "type": "number",
+      "label": "Text Scale Transition (sec)",
+      "steps": 0.1,
+      "value": 1,
+      "min": 0,
+      "group": "Effects"
+    },
+    "effectsScaleSize": {
+      "type": "number",
+      "label": "Text Scale Size (zoom)",
+      "steps": 0.1,
+      "value": 3,
+      "min": 1,
+      "group": "Effects"
+    }
+  }

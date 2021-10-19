@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css?family={{topTextFontName}}');
+
+.video-container {
+  opacity: 0;
+  transition: opacity {{effectsOpacityTransition}}s ease;
+}
+
+.video-container.playing {
+  opacity: 1;
+}
+
+.message {
+  font-size: {{generalFontSize}}px;
+  color: {{topTextColor}};
+  text-transform: uppercase;
+  text-shadow: 4px 3px 0px {{topTextShadow}};
+  -webkit-text-stroke: 1px {{topTextShadow}};
+  font-style: italic;
+  font-family: "{{topTextFontName}}", sans-serif;
+  text-align: {{topTextAlign}};
+  margin: 20px 0;
+}
+
+.playing .message {
+  animation: scaleMessage {{effectsScaleTransition}}s forwards;
+}
+
+@keyframes scaleMessage {
+ 0% {
+   transform: scale({{effectsScaleSize}});
+  }
+ 100% {
+   transform: scale(1.0);
+ }
+}

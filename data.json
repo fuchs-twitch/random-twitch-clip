@@ -1,0 +1,18 @@
+{
+    "generalCommand":"!so",
+    "generalMinViews":10,
+    "generalFontSize":52,
+    
+    "permissionsMods":true,
+    "permissionsVIPs":false,
+    
+    "topTextFontName":"Open Sans",
+    "topTextColor":"#FFFFFF",
+    "topTextShadow":"rgb(219, 155, 166)",
+    "topTextTemplate":"Check out this cutie",
+    "topTextAlign":"center",
+
+    "effectsOpacityTransition":0.5,
+    "effectsScaleTransition":1,
+    "effectsScaleSize":3
+}
