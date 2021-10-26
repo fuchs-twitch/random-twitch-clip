@@ -14,5 +14,6 @@
 
     "effectsOpacityTransition":0.5,
     "effectsScaleTransition":1,
-    "effectsScaleSize":3
+    "effectsScaleSize":3,
+    "serverURL":"myurl.com/twitch/random-topclip.php"
 }

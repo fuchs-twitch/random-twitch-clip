@@ -5,6 +5,7 @@ const minViews = {{generalMinViews}}
 const video = document.querySelector("#clip");
 const container = document.querySelector('.video-container')
 const channel = document.querySelector('.channel')
+const url = "{{serverURL}}"
 
 window.addEventListener('onWidgetLoad', (obj) => {
     console.log(`Debug: widget loaded`)
@@ -77,7 +78,7 @@ function getRandomClip(message, sender) {
     console.log(`Debug: ${channel} (extracted channel)`)
 
     if ( !isPlaying() ) {
-        fetch(`https://myurl.com/twitch/random-topclip.php?username=${channel}&views=${minViews}&sender=${sender}`)
+        fetch(`https://${url}?username=${channel}&views=${minViews}&sender=${sender}`)
             .then(response => response.json())
             .then(data => {
                 console.log(`Debug: fetched ${data["url"]}`)

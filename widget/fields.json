@@ -92,5 +92,11 @@
       "value": 3,
       "min": 1,
       "group": "Effects"
+    },
+    "serverURL": {
+      "type": "text",
+      "label": "Fetch Resource (URL without https)",
+      "value": "myurl.com/twitch/random-topclip.php",
+      "group": "Server"
     }
   }
