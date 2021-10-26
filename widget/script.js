@@ -79,7 +79,7 @@ function getRandomClip(message) {
     console.log(`Debug: ${channel} (extracted channel)`)
 
     if ( !isPlaying() ) {
-        fetch(`https://myurl.com/twitch/twitch-random-topclip.php?username=${channel}&views=${minViews}`)
+        fetch(`https://myurl.com/twitch/random-topclip.php?username=${channel}&views=${minViews}`)
             .then(response => response.json())
             .then(data => {
                 console.log(`Debug: fetched ${data["url"]}`)
