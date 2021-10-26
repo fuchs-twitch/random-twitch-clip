@@ -6,8 +6,6 @@ const video = document.querySelector("#clip");
 const container = document.querySelector('.video-container')
 const channel = document.querySelector('.channel')
 
-let test2
-
 window.addEventListener('onWidgetLoad', (obj) => {
     console.log(`Debug: widget loaded`)
     const fieldData = obj.detail.fieldData
@@ -29,8 +27,8 @@ window.addEventListener('onEventReceived', (obj) => {
     
         console.log(`Debug: ${eventContent['nick']}: ${message}`)
 
-        if ( senderHasPermission(eventContent) && message.startsWith(`${command} `) ) {
-            getRandomClip(message) 
+    if ( senderHasPermission(eventContent) && message.startsWith(`${command} `) ) {
+            getRandomClip(message, eventContent['nick']) 
         }
     }
 })
@@ -71,7 +69,7 @@ function filterBadges(badge) {
     return false  
 }
 
-function getRandomClip(message) {
+function getRandomClip(message, sender) {
     let content = message.replace(`${command} `, "")
     let channel = content.split(" ")[0]
 
@@ -79,7 +77,7 @@ function getRandomClip(message) {
     console.log(`Debug: ${channel} (extracted channel)`)
 
     if ( !isPlaying() ) {
-        fetch(`https://myurl.com/twitch/random-topclip.php?username=${channel}&views=${minViews}`)
+        fetch(`https://myurl.com/twitch/random-topclip.php?username=${channel}&views=${minViews}&sender=${sender}`)
             .then(response => response.json())
             .then(data => {
                 console.log(`Debug: fetched ${data["url"]}`)
