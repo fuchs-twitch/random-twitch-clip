@@ -21,9 +21,10 @@
     curl_setopt($cho, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($cho, CURLOPT_POST, 1);
 
+    include_once("auth.php");
     $fields = array(
-        'client_id' => '',
-        'client_secret' => '',
+        'client_id' => $CLIENT_ID,
+        'client_secret' => $CLIENT_SECRET,
         'grant_type' => 'client_credentials',
         'token_type' => 'bearer',
     );
@@ -58,6 +59,30 @@
     $user_id = $result->id;
     $display_name = $result->display_name;
 
+    // GET GAME IDS
+    $games = ["Among Us"];
+
+    $game_url = "name=";
+    foreach ( $games as $game ) {
+        $game_url .= urlencode($game) . "&name=";
+    }
+
+    $curl = curl_init();
+    $url = 'https://api.twitch.tv/helix/games?' . $game_url;
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+    $output = curl_exec($curl);
+    $json_result = json_decode($output);
+    $game_ids = array();
+
+    if ( $json_result->data ) {
+        foreach ( $json_result->data as $key => $game ) {
+            array_push( $game_ids, $game->id );
+        }
+    }
+
     // GET CLIPS
     $ch = curl_init();
     $url = 'https://api.twitch.tv/helix/clips?broadcaster_id=' . $user_id . '&first=100';
@@ -70,7 +95,29 @@
     curl_close ($ch);
     $json_result = json_decode($output);
 
-    $count = count( $json_result->data);
+    // FILTER CLIPS
+    $filtered = array();
+    $rejected = array();
+
+    foreach( $json_result->data as $key => $clip) {
+
+        // if clip has the game id of filtered games, remove it
+        if ( in_array( $clip->game_id, $game_ids ) ) {
+            array_push( $rejected, $clip );
+            continue;
+        } 
+
+        // if kae clip is VALORANT
+        // if ( $clip->broadcaster_name === "kae_tv" && $clip->game_id === "516575" ) {
+        //     array_push( $rejected, $clip );
+        //     continue;
+        // }
+
+        array_push( $filtered, $clip );
+    }
+    
+    // CHECK MIN VIEWS OF ALL CLIPS
+    $count = count( $filtered );
     $limit = $count - 1;
     $mode = 'all clips';
     
@@ -79,13 +126,16 @@
         exit();
     }
 
-    foreach( $json_result->data as $key => $clip) {
+
+    foreach( $filtered as $key => $clip) {
         if ( $clip->view_count < $min_views ) {
+            // if streamer has less than 10 clips with min views => ignore min views
             if ( $key < 10 ) {
                 $mode = 'only ' . $key . ' clips with at least ' . $min_views . ' views => all clips';
                 break;
             }
 
+            // ignore clips with less than min views
             if ( $key - 1 >= 0 ) {
                 $mode = $key . ' clips with at least ' . $min_views . ' views found => limited clips';
                 $limit = $key - 1;
@@ -94,8 +144,9 @@
         }
     }
 
+    // GET RANDOM CLIP
     $random_index = rand(0, $limit);
-    $result = $json_result->data[$random_index];
+    $result = $filtered[$random_index];
 
     /* example response
         [id] => StupidIntelligentHorseradishCharlieBitMe
@@ -119,7 +170,7 @@
     header('Content-Type: application/json');
     header('Access-Control-Allow-Origin: *');
 
-    echo 'for(;;);' . json_encode(
+    echo json_encode(
         array( 
             "channel" => $result->broadcaster_name, 
             "duration" => $result->duration,
@@ -129,11 +180,14 @@
             "views" => $result->view_count,
             "date" => $result->created_at,
             "debug" => array(
-                "total_clips" => $count,
+                "total_unfiltered_clips" => count( $json_result->data ),
+                "total_filtered_clips" => $count,
                 "min_views" =>  $min_views,
                 "last_index" => $limit,
                 "random_index" => $random_index,
-                "description" => $mode
+                "description" => $mode,
+                "clip_url" => $result->url,
+                "filtered_game_ids" => join(", ", $game_ids) 
             )
         )
     );
