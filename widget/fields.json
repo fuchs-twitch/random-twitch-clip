@@ -5,6 +5,12 @@
       "value": "!so",
       "group": "General"
     },
+    "generalAlias": {
+      "type": "text",
+      "label": "Alias",
+      "value": "!clips",
+      "group": "General"
+    },
     "generalMinViews": {
       "type": "number",
       "label": "Min required views",

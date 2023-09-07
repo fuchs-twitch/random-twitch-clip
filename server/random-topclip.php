@@ -3,12 +3,26 @@
     $min_views = check_min_views( $_GET['views'] );
     $min_clips = 25;
     $sender = $_GET['sender'];
+    $date_start = "";
+    $date_end = "";
+    $comment = "";
+
     if ( $username === "fuchs_" ) { $username = $sender; }
+    if ( $username === "imkataclysm" ) :
+        $now = date(DATE_RFC3339);
+	    $lastyear = date(DATE_RFC3339, time() - ( 365 * 24 * 60 * 60 ));
+
+        $date_start = "&started_at=" . urlencode($lastyear);
+        $date_end = "&ended_at=" . urlencode($now);
+        $comment = "imkataclysm -> only clips from the past 365 days";
+    endif;
+
     $access_token = get_access_token();
     $user = get_user_id($username, $access_token);
     $filtered_games = ["Among Us"];
     $filtered_game_ids = get_filtered_game_ids($filtered_games, $access_token);
-    $clips = get_clips($user, $access_token);
+
+    $clips = get_clips($user, $access_token, $date_start, $date_end);
     list($filtered_clips, $rejected_clips) = get_filtered_clips($clips, $filtered_game_ids);
     list($random_clip, $debug) = get_random_clip($filtered_clips, $user, $min_views, $min_clips);
 
@@ -43,6 +57,8 @@
             "url" => str_replace( "-preview-480x272.jpg", ".mp4", $random_clip->thumbnail_url),
             "views" => $random_clip->view_count,
             "date" => $random_clip->created_at,
+            "date_start" => $date_start,
+            "date_end" => $date_end,
             "debug" => array(
                 "total_unfiltered_clips" => count( $clips ),
                 "total_filtered_clips" => count( $filtered_clips ),
@@ -53,7 +69,8 @@
                 "description" => $debug['mode'],
                 "clip_url" => $random_clip->url,
                 "filtered_game_ids" => join(", ", $filtered_game_ids),
-                "sender" => $sender
+                "sender" => $sender,
+                "comment" => $comment
             )
         )
     );
@@ -168,15 +185,16 @@
         return $game_ids;
     }
 
-    function get_clips($user, $access_token) {
+    function get_clips($user, $access_token, $date_start, $date_end) {
         $ch = curl_init();
-        $url = 'https://api.twitch.tv/helix/clips?broadcaster_id=' . $user->id . '&first=100';
+        $url = 'https://api.twitch.tv/helix/clips?broadcaster_id=' . $user->id . $date_start . $date_end . '&first=100';
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, get_http_header($access_token));
         $output = curl_exec($ch);
         curl_close ($ch);
+        $request_url = $url;
         $json_result = json_decode($output);
         return $json_result->data;
     }
